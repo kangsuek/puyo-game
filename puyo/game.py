@@ -47,6 +47,15 @@ class Game:
         new_rotation = (self.current_puyo.rotation + 1) % 4
         if self.is_valid_position(self.current_puyo.x, self.current_puyo.y, new_rotation):
             self.current_puyo.rotate()
+        else:
+            # Try to shift left if rotation is not valid
+            if self.is_valid_position(self.current_puyo.x - 1, self.current_puyo.y, new_rotation):
+                self.current_puyo.x -= 1
+                self.current_puyo.rotate()
+            # If shifting left doesn't work, try shifting right
+            elif self.is_valid_position(self.current_puyo.x + 1, self.current_puyo.y, new_rotation):
+                self.current_puyo.x += 1
+                self.current_puyo.rotate()
 
     def is_valid_position(self, x, y, rotation):
         positions = self.current_puyo.get_positions(rotation)

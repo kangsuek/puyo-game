@@ -3,6 +3,7 @@ from puyo.colors import COLORS
 from collections import deque
 
 class Board:
+    """Represents the game board."""
     def __init__(self, width, height):
         self.grid_size = 30
         self.grid_width = width // self.grid_size
@@ -10,6 +11,7 @@ class Board:
         self.grid = [[None for _ in range(self.grid_width)] for _ in range(self.grid_height)]
 
     def is_valid_move(self, puyo, dx, dy):
+        """Checks if a puyo move is valid."""
         for px, py in puyo.get_positions():
             new_x, new_y = px + puyo.x + dx, py + puyo.y + dy
             if new_x < 0 or new_x >= self.grid_width or new_y >= self.grid_height:
@@ -19,10 +21,12 @@ class Board:
         return True
 
     def place_puyo(self, puyo):
+        """Places a puyo on the board."""
         for (x, y), color in zip(puyo.get_positions(), [puyo.color1, puyo.color2]):
             self.grid[y + puyo.y][x + puyo.x] = color
 
     def clear_matches(self) -> int:
+        """Clears matched puyos and returns the number of cleared puyos."""
         cleared = set()
         for y in range(self.grid_height):
             for x in range(self.grid_width):
@@ -36,6 +40,7 @@ class Board:
         return len(cleared)
 
     def find_matches(self, x: int, y: int, color: str) -> set:
+        """Finds all connected puyos of the same color."""
         matched = set()
         stack = [(x, y)]
 
@@ -55,6 +60,7 @@ class Board:
         return matched
 
     def apply_gravity(self):
+        """Applies gravity to the board."""
         for x in range(self.grid_width):
             column = [self.grid[y][x] for y in range(self.grid_height) if self.grid[y][x]]
             column = [None] * (self.grid_height - len(column)) + column
@@ -62,6 +68,7 @@ class Board:
                 self.grid[y][x] = column[y]
 
     def draw(self, screen):
+        """Draws the board on the screen."""
         for y in range(self.grid_height):
             for x in range(self.grid_width):
                 if self.grid[y][x]:
